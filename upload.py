@@ -1,18 +1,11 @@
 import streamlit as st
 import cv2 as cv
-import tempfile
 
-f = st.file_uploader("Upload file")
-
-tfile = tempfile.NamedTemporaryFile(delete=False) 
-tfile.write(f.read())
-
-
-vf = cv.VideoCapture(tfile.name)
-
-stframe = st.empty()
-
-while vf.isOpened():
+uploaded_file = st.file_uploader("Choose a file")
+if uploaded_file is not None:
+    vf = cv.VideoCapture(uploaded_file)
+    
+    while vf.isOpened():
     ret, frame = vf.read()
     # if frame is read correctly ret is True
     if not ret:
@@ -20,3 +13,4 @@ while vf.isOpened():
         break
     gray = cv.cvtColor(frame, cv.COLOR_BGR2GRAY)
     stframe.image(gray)
+    
