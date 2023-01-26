@@ -4,7 +4,7 @@ from io import StringIO
 
 uploaded_file = st.file_uploader("Choose a file")
 if uploaded_file is not None:
-    video_file = open('uploaded_file', 'rb')
+    video_file = open('uploaded_file')
     #video_bytes = video_file.read()
     #st.video(video_bytes)
     st.video(video_file, format="video/mp4", start_time=0)
