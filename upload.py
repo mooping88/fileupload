@@ -1,26 +1,22 @@
 import streamlit as st
-import pandas as pd
-from io import StringIO
+import cv2 as cv
+import tempfile
 
-uploaded_file = st.file_uploader("Choose a file")
-if uploaded_file is not None:
-    video_file = open('myvideo.mp4', 'rb')
-    video_bytes = video_file.read()
-    st.video(video_bytes)
-    #st.video(video_file, format="video/mp4", start_time=0)
-    # To read file as bytes:
-    #bytes_data = uploaded_file.getvalue()
-    #st.write(bytes_data)
+f = st.file_uploader("Upload file")
 
-    # To convert to a string based IO:
-   # stringio = StringIO(uploaded_file.getvalue().decode("utf-8"))
-   # st.write(stringio)
+tfile = tempfile.NamedTemporaryFile(delete=False) 
+tfile.write(f.read())
 
-    # To read file as string:
-  #  string_data = stringio.read()
-  #  st.write(string_data)
 
-    # Can be used wherever a "file-like" object is accepted:
-   # dataframe = pd.read_csv(uploaded_file)
-   # st.write(dataframe)
-   
+vf = cv.VideoCapture(tfile.name)
+
+stframe = st.empty()
+
+while vf.isOpened():
+    ret, frame = vf.read()
+    # if frame is read correctly ret is True
+    if not ret:
+        print("Can't receive frame (stream end?). Exiting ...")
+        break
+    gray = cv.cvtColor(frame, cv.COLOR_BGR2GRAY)
+    stframe.image(gray)
